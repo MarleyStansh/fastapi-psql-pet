@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Product
 from core.schemas import ProductCreate
+from fastapi.exceptions import HTTPException
 
 
 async def get_all_products(
@@ -21,4 +22,16 @@ async def create_product(
     session.add(product)
     await session.commit()
     # await session.refresh()
+    return product
+
+
+async def get_product_by_id(
+    session: AsyncSession,
+    product_id: int,
+) -> Product:
+    product = await session.get(Product, product_id)
+    if not product:
+        raise HTTPException(
+            status_code=404, detail="The requested product is not found."
+        )
     return product
