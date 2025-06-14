@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends
 from core.config import settings
 from .crud import products as product_crud
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.schemas import ProductRead, ProductCreate, ProductUpdate
+from core.schemas import ProductRead, ProductCreate, ProductUpdate, ProductUpdatePartial
 from fastapi import Depends
 from core.models import db_helper
 
@@ -57,6 +57,22 @@ async def update_product(
         new_product=new_product,
         session=session,
         product=product,
+    )
+    await session.commit()
+    return product
+
+
+@router.patch("/{product_id}/")
+async def update_product_partial(
+    new_product: ProductUpdatePartial,
+    session: AsyncSession = Depends(db_helper.session_getter),
+    product: ProductRead = Depends(get_product_by_id),
+):
+    product = await product_crud.update_product(
+        new_product=new_product,
+        session=session,
+        product=product,
+        partial=True,
     )
     await session.commit()
     return product

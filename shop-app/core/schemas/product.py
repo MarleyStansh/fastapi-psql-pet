@@ -25,3 +25,9 @@ class ProductRead(ProductBase):
 
 class ProductUpdate(ProductBase):
     pass
+
+
+class ProductUpdatePartial(ProductUpdate):
+    name: str | None = None
+    price: int | None = None
+    description: str | None = None

@@ -2,7 +2,7 @@ from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Product
-from core.schemas import ProductCreate, ProductUpdate
+from core.schemas import ProductCreate, ProductUpdate, ProductUpdatePartial
 from fastapi.exceptions import HTTPException
 from fastapi import Depends
 
@@ -39,12 +39,11 @@ async def get_product_by_id(
 
 
 async def update_product(
-    new_product: ProductUpdate,
+    new_product: ProductUpdate | ProductUpdatePartial,
     session: AsyncSession,
     product: Product,
     partial: bool = False,
 ):
-    print(new_product.model_dump(exclude_unset=partial))
     for name, value in new_product.model_dump(exclude_unset=partial).items():
         setattr(product, name, value)
     await session.commit()
