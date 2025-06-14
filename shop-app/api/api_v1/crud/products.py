@@ -2,8 +2,9 @@ from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Product
-from core.schemas import ProductCreate
+from core.schemas import ProductCreate, ProductUpdate
 from fastapi.exceptions import HTTPException
+from fastapi import Depends
 
 
 async def get_all_products(
@@ -34,4 +35,17 @@ async def get_product_by_id(
         raise HTTPException(
             status_code=404, detail="The requested product is not found."
         )
+    return product
+
+
+async def update_product(
+    new_product: ProductUpdate,
+    session: AsyncSession,
+    product: Product,
+    partial: bool = False,
+):
+    print(new_product.model_dump(exclude_unset=partial))
+    for name, value in new_product.model_dump(exclude_unset=partial).items():
+        setattr(product, name, value)
+    await session.commit()
     return product

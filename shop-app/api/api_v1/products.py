@@ -1,8 +1,8 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 from core.config import settings
 from .crud import products as product_crud
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.schemas import ProductRead, ProductCreate
+from core.schemas import ProductRead, ProductCreate, ProductUpdate
 from fastapi import Depends
 from core.models import db_helper
 
@@ -40,4 +40,23 @@ async def get_product_by_id(
         session=session,
         product_id=product_id,
     )
+    return product
+
+
+@router.put(
+    "/{product_id}/",
+    status_code=status.HTTP_201_CREATED,
+    responses={201: {"model": ProductRead}},
+)
+async def update_product(
+    new_product: ProductUpdate,
+    session: AsyncSession = Depends(db_helper.session_getter),
+    product: ProductRead = Depends(get_product_by_id),
+):
+    product = await product_crud.update_product(
+        new_product=new_product,
+        session=session,
+        product=product,
+    )
+    await session.commit()
     return product

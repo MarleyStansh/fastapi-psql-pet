@@ -21,3 +21,7 @@ class ProductRead(ProductBase):
     # model_config: ClassVar = ConfigDict(
     #     from_attributes=True,
     # )
+
+
+class ProductUpdate(ProductBase):
+    pass
