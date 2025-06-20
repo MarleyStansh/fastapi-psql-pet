@@ -4,7 +4,7 @@ from fastapi import Depends
 from fastapi_users.authentication.strategy.db import (
     DatabaseStrategy,
 )
-from core.config import Settings
+from core.config import settings
 from .access_tokens import get_access_token_db
 
 if TYPE_CHECKING:
@@ -17,5 +17,5 @@ def get_database_strategy(
 ) -> DatabaseStrategy:
     return DatabaseStrategy(
         database=access_token_db,
-        lifetime_seconds=Settings.access_token.lifetime_seconds,
+        lifetime_seconds=settings.access_token.lifetime_seconds,
     )
