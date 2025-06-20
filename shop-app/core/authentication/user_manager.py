@@ -1,5 +1,4 @@
 import logging
-import uuid
 from typing import Optional, TYPE_CHECKING
 
 from fastapi import Depends

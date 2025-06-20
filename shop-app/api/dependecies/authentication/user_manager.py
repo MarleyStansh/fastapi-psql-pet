@@ -1,4 +1,4 @@
-from users import get_user_db
+from .users import get_user_db
 from fastapi import Depends
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from core.authentication.user_manager import UserManager
