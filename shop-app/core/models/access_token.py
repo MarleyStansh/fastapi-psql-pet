@@ -4,9 +4,6 @@ from fastapi_users_db_sqlalchemy.access_token import (
     SQLAlchemyAccessTokenDatabase,
     SQLAlchemyBaseAccessTokenTable,
 )
-from fastapi_users.db import (
-    SQLAlchemyUserDatabase,
-)
 from sqlalchemy import (
     ForeignKey,
     Integer,
@@ -27,4 +24,4 @@ class AccessToken(Base, SQLAlchemyBaseAccessTokenTable[UserIdType]):
 
     @classmethod
     def get_db(cls, session: AsyncSession):
-        return SQLAlchemyUserDatabase(session, cls)
+        return SQLAlchemyAccessTokenDatabase(session, cls)
