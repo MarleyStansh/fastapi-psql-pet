@@ -4,6 +4,9 @@ __all__ = (
     "ProductRead",
     "ProductUpdate",
     "ProductUpdatePartial",
+    "UserRead",
+    "UserCreate",
+    "UserUpdate",
 )
 
 from .product import (
@@ -12,4 +15,9 @@ from .product import (
     ProductRead,
     ProductUpdate,
     ProductUpdatePartial,
+)
+from .user import (
+    UserCreate,
+    UserRead,
+    UserUpdate,
 )
