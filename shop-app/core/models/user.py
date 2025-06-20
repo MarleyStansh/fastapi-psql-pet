@@ -8,8 +8,7 @@ from .base import Base
 from core.types import UserIdType
 from .mixins import IntIdPkMixin
 
-if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class User(Base, IntIdPkMixin, SQLAlchemyBaseUserTable[UserIdType]):

@@ -15,8 +15,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base
 from core.types import UserIdType
 
-if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class AccessToken(Base, SQLAlchemyBaseAccessTokenTable[UserIdType]):
