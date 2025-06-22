@@ -9,6 +9,7 @@ from fastapi_users import (
 from core.config import settings
 from core.types import UserIdType
 from core.models import User
+from api.api_v1.utils.send_email import send_token_verification_email
 
 log = logging.getLogger(__name__)
 
@@ -53,4 +54,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
             f"Verification requested for user %r. Verification token: %s",
             user.id,
             token,
+        )
+        await send_token_verification_email(
+            recipient=user.email,
+            subject="Your verification on site.com",
+            token=token,
         )
