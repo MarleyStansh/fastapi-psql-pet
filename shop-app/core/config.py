@@ -11,11 +11,22 @@ class RunConfig(BaseModel):
     port: int = 8000
 
 
+class EmailConfig(BaseModel):
+    host: str = "localhost"
+    port: int = 8025
+    admin_email: str = "admin@site.com"
+
+    @classmethod
+    def verif_message(self, email, token):
+        return f"Verification token for user with email {email}: {token}. Use it to verify your account"
+
+
 class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
     products: str = "/products"
     auth: str = "/auth"
     users: str = "/users"
+    email: EmailConfig = EmailConfig()
 
 
 class ApiPrefix(BaseModel):
