@@ -1,20 +1,20 @@
 import logging
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 
-from fastapi import Depends
 from fastapi_users import (
     BaseUserManager,
     IntegerIDMixin,
+    exceptions,
 )
 from core.config import settings
 from core.types import UserIdType
 from core.models import User
-from api.api_v1.utils.send_email import send_token_verification_email
+from fastapi_users.jwt import generate_jwt
 
 log = logging.getLogger(__name__)
 
-if TYPE_CHECKING:
-    from fastapi import Request
+
+from fastapi import Request
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
@@ -55,8 +55,24 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
             user.id,
             token,
         )
-        await send_token_verification_email(
-            recipient=user.email,
-            subject="Your verification on site.com",
-            token=token,
+
+    async def request_verify(
+        self, user: User, request: Optional[Request] = None
+    ) -> None:
+        if not user.is_active:
+            raise exceptions.UserInactive()
+        if user.is_verified:
+            raise exceptions.UserAlreadyVerified()
+
+        token_data = {
+            "sub": str(user.id),
+            "email": user.email,
+            "aud": self.verification_token_audience,
+        }
+        token = generate_jwt(
+            token_data,
+            self.verification_token_secret,
+            self.verification_token_lifetime_seconds,
         )
+        await self.on_after_request_verify(user, token, request)
+        return token

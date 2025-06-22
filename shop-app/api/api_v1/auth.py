@@ -6,10 +6,20 @@ from api.dependecies.authentication import (
 )
 from core.schemas.user import UserCreate, UserRead
 
+from fastapi import APIRouter
+
+
+from api.dependecies.authentication import (
+    authentication_backend,
+)
+from .auth_custom_routers import router as custom_auth_router
+
 router = APIRouter(
     prefix=settings.api.v1.auth,
     tags=["Auth"],
 )
+
+router.include_router(custom_auth_router)
 
 # /login/
 # /logout/
