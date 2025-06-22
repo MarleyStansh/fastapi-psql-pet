@@ -18,7 +18,11 @@ class EmailConfig(BaseModel):
 
     @classmethod
     def verif_message(self, email, token):
-        return f"Verification token for user with email {email}: {token}. Use it to verify your account"
+        return f"Verification token for user with email {email}: {token}. Use it to verify your account."
+
+    @classmethod
+    def passw_reset_message(self, email, token):
+        return f"Password reset token for user with email {email}: {token}. Use it to reset your password."
 
 
 class ApiV1Prefix(BaseModel):
