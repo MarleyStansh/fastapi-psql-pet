@@ -29,6 +29,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
             "User %r has registered.",
             user.id,
         )
+        await self.request_verify(user=user)
 
     async def on_after_forgot_password(
         self,
