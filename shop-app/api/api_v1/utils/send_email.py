@@ -4,10 +4,12 @@ from core.config import settings
 import aiosmtplib
 
 
-async def send_token_verification_email(
+async def send_token_email(
     recipient: str,
     subject: str,
     token: str,
+    verification: bool | None = None,
+    password_reset: bool | None = None,
 ):
     admin_email = settings.api.v1.email.admin_email
 
@@ -15,12 +17,20 @@ async def send_token_verification_email(
     message["From"] = admin_email
     message["To"] = recipient
     message["Subject"] = subject
-    message.set_content(
-        settings.api.v1.email.verif_message(
-            email=recipient,
-            token=token,
+    if verification:
+        message.set_content(
+            settings.api.v1.email.verif_message(
+                email=recipient,
+                token=token,
+            )
         )
-    )
+    elif password_reset:
+        message.set_content(
+            settings.api.v1.email.passw_reset_message(
+                email=recipient,
+                token=token,
+            )
+        )
 
     await aiosmtplib.send(
         message,

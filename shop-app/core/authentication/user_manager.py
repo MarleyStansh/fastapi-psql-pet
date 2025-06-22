@@ -76,3 +76,24 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         )
         await self.on_after_request_verify(user, token, request)
         return token
+
+    async def forgot_password(
+        self,
+        user: User,
+        request: Optional[Request] = None,
+    ) -> None:
+        if not user.is_active:
+            raise exceptions.UserInactive()
+
+        token_data = {
+            "sub": str(user.id),
+            "password_fgpt": self.password_helper.hash(user.hashed_password),
+            "aud": self.reset_password_token_audience,
+        }
+        token = generate_jwt(
+            token_data,
+            self.reset_password_token_secret,
+            self.reset_password_token_lifetime_seconds,
+        )
+        await self.on_after_forgot_password(user, token, request)
+        return token
